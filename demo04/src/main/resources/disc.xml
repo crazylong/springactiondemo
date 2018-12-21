@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!--启用AspectJ自动代理-->
+    <aop:aspectj-autoproxy/>
+    <bean id="trackCounterXml" class="com.coderlong.springactiondemo.aspectparam.TrackCounterXml"/>
+    <bean id="cd" class="com.coderlong.springactiondemo.aspectparam.BlankDisc">
+        <property name="title" value="Sgt. Pepper's Lonely Hearts Club Band"/>
+        <property name="artist" value="The Beatles"/>
+        <property name="tracks">
+            <list>
+                <value>Sgt. Pepper's Lonely Hearts Club Band</value>
+                <value>With a Little Help from my Friends</value>
+                <value>Lucy in th Sky with Diamonds</value>
+                <value>Getting Better</value>
+                <value>Fixing a hole</value>
+                <value>爱你一万年</value>
+                <value>一生所爱</value>
+                <value>一生何求</value>
+            </list>
+        </property>
+    </bean>
+
+
+    <aop:config>
+        <!--声明切面-->
+        <aop:aspect ref="trackCounterXml">
+            <!--声明切点，如果想切点被多个切面使用，可以定义在 aop:config 内-->
+            <!--这里用 and 代替 && 因 xml 中 & 会被解析为实体的开始-->
+            <aop:pointcut id="trackPlayed" expression="execution(* com.coderlong.springactiondemo.aspectparam.CompactDisc.playTrack(int)) and args(trackNumber)"/>
+            <aop:before pointcut-ref="trackPlayed" method="countTrack"></aop:before>
+        </aop:aspect>
+
+    </aop:config>
+</beans>

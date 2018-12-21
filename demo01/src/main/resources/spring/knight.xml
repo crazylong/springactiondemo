@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!--注入Quest bean-->
+    <bean id="knight" class="com.coderlong.springactiondemo.BraveKnight">
+        <constructor-arg ref="quest" />
+    </bean>
+
+    <!--创建SlayDragonQuest， #{T(System).out}：Spring表达式语言，-->
+    <bean id="quest" class="com.coderlong.springactiondemo.SlayDragonQuest">
+        <constructor-arg value="#{T(System).out}" />
+    </bean>
+
+    <!--声明Minstrel bean-->
+    <bean id="minstrel" class="com.coderlong.springactiondemo.Minstrel">
+        <constructor-arg value="#{T(System).out}"/>
+    </bean>
+
+    <aop:config>
+        <!--定义切面-->
+       <aop:aspect ref="minstrel">
+           <!--定义切点,采用AspectJ切点表达式语言-->
+           <aop:pointcut id="embark" expression="execution(* *.embarkOnQuest(..))"/>
+           <!--声明前置通知(before advice)-->
+           <aop:before method="singBeforeQuest" pointcut-ref="embark"/>
+           <!--声明后置通知(after advice-->
+           <aop:after method="singAfterQuest" pointcut-ref="embark"/>
+       </aop:aspect>
+    </aop:config>
+</beans>

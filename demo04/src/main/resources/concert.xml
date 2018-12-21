@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!--<context:component-scan base-package="com.coderlong.springactiondemo.concert"/>-->
+    <!--启用AspectJ自动代理-->
+    <aop:aspectj-autoproxy/>
+    <bean id="audienceXml" class="com.coderlong.springactiondemo.concert.AudienceXml"/>
+    <bean id="audienceAroundXml" class="com.coderlong.springactiondemo.concert.AudienceAroundXml"/>
+    <bean class="com.coderlong.springactiondemo.concert.MusicPerformance"></bean>
+
+    <aop:config>
+        <!--声明切面-->
+        <aop:aspect ref="audienceXml">
+            <!--声明切点，如果想切点被多个切面使用，可以定义在 aop:config 内-->
+            <aop:pointcut id="performance" expression="execution(* com.coderlong.springactiondemo.concert.Performance.perform(..))"/>
+            <aop:before pointcut-ref="performance" method="silenceCellPhones"></aop:before>
+
+            <aop:before pointcut-ref="performance" method="takeSeats"></aop:before>
+
+            <aop:after-returning pointcut-ref="performance" method="applause"></aop:after-returning>
+
+            <aop:after-throwing pointcut-ref="performance" method="demandRefund"></aop:after-throwing>
+        </aop:aspect>
+
+        <aop:aspect ref="audienceAroundXml">
+            <!--声明切点，如果想切点被多个切面使用，可以定义在 aop:config 内-->
+            <aop:pointcut id="performance" expression="execution(* com.coderlong.springactiondemo.concert.Performance.perform(..))"/>
+            <aop:around method="watchPerformance" pointcut-ref="performance"/>
+        </aop:aspect>
+    </aop:config>
+</beans>

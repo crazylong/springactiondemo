@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!--启用AspectJ自动代理-->
+    <aop:aspectj-autoproxy/>
+    
+
+
+    <aop:config>
+        <!--通过切面引入新的功能-->
+        <!--类型匹配Performance接口(由types-matching属性指定)的那些bean在父类结构中
+        会增加Encoreable接口(由implement-interface属性指定。
+        两种方式标识所引入接口实现：1，default-impl;2,delegate-ref -->
+        <aop:aspect>
+           <aop:declare-parents types-matching="com.coderlong.springactiondemo.concert.Performance+"
+                                implement-interface="com.coderlong.springactiondemo.concert.Encoreable"
+                                default-impl="com.coderlong.springactiondemo.concert.DefaultEncoreable"
+           />
+            <!--delegate-ref="encoreableDelegate"-->
+        </aop:aspect>
+
+    </aop:config>
+    <bean id="encoreableDelegate" class="com.coderlong.springactiondemo.concert.DefaultEncoreable"/>
+</beans>
